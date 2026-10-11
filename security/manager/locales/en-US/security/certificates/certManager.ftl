@@ -38,6 +38,13 @@ certmgr-edit-cert-trust-ssl =
 certmgr-edit-cert-trust-email =
     .label = This certificate can identify mail users.
 
+certmgr-edit-cert-scoped-trust-title = Website domain restrictions
+certmgr-edit-cert-scoped-trust =
+    .label = Trust this CA only for the listed domains
+certmgr-edit-cert-scoped-domains-description = Enter one regular expression per line. Each expression is matched against the entire hostname, case-insensitively.
+certmgr-edit-cert-scoped-domains-label = Allowed hostname regular expressions:
+certmgr-edit-cert-scoped-domains-invalid = Enter at least one valid regular expression.
+
 certmgr-delete-cert2 =
     .title = Delete Certificate
     .style = min-width: 48em; min-height: 24em;

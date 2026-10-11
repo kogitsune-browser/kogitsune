@@ -32,5 +32,25 @@
       <checkbox data-l10n-id="certmgr-edit-cert-trust-ssl" id="trustSSL" />
       <checkbox data-l10n-id="certmgr-edit-cert-trust-email" id="trustEmail" />
     </vbox>
+    <separator />
+    <groupbox>
+      <caption data-l10n-id="certmgr-edit-cert-scoped-trust-title" />
+      <checkbox
+        id="scopedTrust"
+        data-l10n-id="certmgr-edit-cert-scoped-trust"
+      />
+      <description
+        data-l10n-id="certmgr-edit-cert-scoped-domains-description"
+      />
+      <label
+        control="scopedDomains"
+        data-l10n-id="certmgr-edit-cert-scoped-domains-label"
+      />
+      <html:textarea
+        id="scopedDomains"
+        rows="5"
+        style="width: 100%; min-height: 8em; box-sizing: border-box"
+      />
+    </groupbox>
   </dialog>
 </window>
