@@ -1,0 +1,19 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960">
+  <defs>
+    <linearGradient id="tail" x1=".14" y1=".12" x2=".87" y2=".88">
+      <stop stop-color="#ffca7d" />
+      <stop offset=".48" stop-color="#f39b5c" />
+      <stop offset="1" stop-color="#bb648b" />
+    </linearGradient>
+    <linearGradient id="inner" x1=".2" y1="0" x2=".8" y2="1">
+      <stop stop-color="#ffe9c6" />
+      <stop offset="1" stop-color="#f4b176" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#tail)" d="M939 932c-23-183-96-336-205-447C602 350 430 317 305 389 201 449 160 581 199 681c29 75 103 129 180 125 92-5 166-75 177-164 8-66-24-132-83-166 114 19 202 86 253 187 40 80 58 167 67 269z"/>
+  <path fill="url(#inner)" d="M861 932c-26-157-88-283-179-376-89-91-209-128-304-83-69 33-98 105-76 166 17 49 64 82 111 79 58-4 102-47 109-103 4-31-5-58-25-81 63 29 104 83 118 150 12 57 7 129-7 248z"/>
+  <path fill="#fff0d8" d="M785 932c17-111 16-180-1-238-14-47-41-82-78-104 0 0 17 42 4 86-19 66-78 108-146 111-40 2-77-11-105-36 33 57 97 97 167 94 57-3 111-25 159-66 9 48 7 99-5 153z" opacity=".92"/>
+</svg>

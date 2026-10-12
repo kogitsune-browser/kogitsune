@@ -69,7 +69,7 @@ p {
 
 .wordmark {
   display: inline-block;
-  background: url("chrome://branding/content/firefox-wordmark.svg") no-repeat center center;
+  background: url("chrome://branding/content/kogitsune-wordmark.svg") no-repeat center center;
   background-size: 172px;
   margin-inline-start: 15px;
   -moz-context-properties: fill;
@@ -478,12 +478,12 @@ content-search-handoff-ui {
       content: "";
       position: fixed;
       inset: 0;
-      background: url("chrome://browser/skin/privatebrowsing/fox-tail.svg") no-repeat bottom right / cover;
+      background: url("chrome://browser/skin/privatebrowsing/kogitsune-tail.svg") no-repeat bottom right / cover;
       pointer-events: none;
       z-index: -1;
     }
 
-    /* The fox-tail is a directional decoration; mirror it in RTL so the
+    /* The tail is a directional decoration; mirror it in RTL so the
        sweep points toward the inline-start corner. */
     html.private:dir(rtl) body::before {
       transform: scaleX(-1);

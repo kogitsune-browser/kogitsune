@@ -1,0 +1,23 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 880">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#35224f" />
+      <stop offset=".55" stop-color="#221834" />
+      <stop offset="1" stop-color="#14101f" />
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#dc8f75" stop-opacity=".44" />
+      <stop offset="1" stop-color="#dc8f75" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="880" fill="url(#sky)" />
+  <ellipse cx="1150" cy="300" rx="400" ry="340" fill="url(#glow)" />
+  <circle cx="1180" cy="215" r="70" fill="#f6d4a1" opacity=".9" />
+  <path d="M0 710Q240 545 476 672T960 646 1440 570V880H0Z" fill="#49315c" />
+  <path d="M0 780Q255 615 520 730T1012 705 1440 640V880H0Z" fill="#291e3b" />
+  <path d="M0 840Q230 720 460 800T900 770 1440 705V880H0Z" fill="#1b162b" />
+  <image href="content/kogitsune-mascot.png" x="790" y="105" width="350" height="350" />
+</svg>

@@ -72,9 +72,8 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
         lproj_root = ab_cd.split("-")[0]
     branding = f"/{CONFIG['MOZ_BRANDING_DIRECTORY']}"
     extra_files = [
-        (f"{branding}/firefox.icns", "Resources/firefox.icns"),
+        (f"{branding}/kogitsune.icns", "Resources/kogitsune.icns"),
         (f"{branding}/document.icns", "Resources/document.icns"),
-        (f"{branding}/Assets.car", "Resources/Assets.car"),
     ]
     if CONFIG["MOZ_UPDATER"]:
         extra_files.append((
