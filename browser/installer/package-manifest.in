@@ -40,9 +40,8 @@
 #endif
 @APPNAME@/Contents/Frameworks
 @APPNAME@/Contents/PkgInfo
-@RESPATH@/firefox.icns
+@RESPATH@/kogitsune.icns
 @RESPATH@/document.icns
-@RESPATH@/Assets.car
 @RESPATH@/@LPROJ_ROOT@.lproj/*
 #endif
 
@@ -233,6 +232,13 @@
 @RESPATH@/browser/chrome/icons/default/default48.png
 @RESPATH@/browser/chrome/icons/default/default64.png
 @RESPATH@/browser/chrome/icons/default/default128.png
+@RESPATH@/browser/chrome/icons/default/kogitsune.png
+@RESPATH@/browser/chrome/icons/default/kogitsune16.png
+@RESPATH@/browser/chrome/icons/default/kogitsune32.png
+@RESPATH@/browser/chrome/icons/default/kogitsune48.png
+@RESPATH@/browser/chrome/icons/default/kogitsune64.png
+@RESPATH@/browser/chrome/icons/default/kogitsune128.png
+@RESPATH@/browser/chrome/icons/default/kogitsune256.png
 #endif
 
 ; [DevTools Startup Files]

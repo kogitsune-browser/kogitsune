@@ -1,0 +1,29 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 880">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#35224f" />
+      <stop offset=".55" stop-color="#221834" />
+      <stop offset="1" stop-color="#14101f" />
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#dc8f75" stop-opacity=".44" />
+      <stop offset="1" stop-color="#dc8f75" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="880" fill="url(#sky)" />
+  <ellipse cx="1150" cy="300" rx="400" ry="340" fill="url(#glow)" />
+  <circle cx="1180" cy="215" r="70" fill="#f6d4a1" opacity=".9" />
+  <path d="M0 710Q240 545 476 672T960 646 1440 570V880H0Z" fill="#49315c" />
+  <path d="M0 780Q255 615 520 730T1012 705 1440 640V880H0Z" fill="#291e3b" />
+  <path d="M0 840Q230 720 460 800T900 770 1440 705V880H0Z" fill="#1b162b" />
+  <g opacity=".95" transform="translate(790 105) scale(1.4)">
+    <circle cx="128" cy="128" r="124" fill="#201832" />
+    <path d="M43 57 101 72 128 50 155 72 213 57 202 139Q190 199 128 224 66 199 54 139Z" fill="#f4a85f" />
+    <path d="M49 64 98 76 88 113 63 130 54 111ZM207 64l-49 12 10 37 25 17 9-19Z" fill="#ffe2b9" />
+    <path d="M83 117Q101 102 117 119L110 132Q95 123 82 132ZM173 117Q157 102 141 119L148 132Q163 123 176 132Z" fill="#251b32" />
+    <path d="M128 127 112 145Q128 157 144 145ZM128 151Q120 166 107 169 117 181 128 177 139 181 149 169 136 166 128 151Z" fill="#fff0d8" />
+  </g>
+</svg>

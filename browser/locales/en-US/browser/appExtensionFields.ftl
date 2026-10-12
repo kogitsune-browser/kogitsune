@@ -14,10 +14,10 @@ extension-firefox-compact-light-description=A theme with a light color scheme.
 extension-firefox-compact-dark-name=Dark
 extension-firefox-compact-dark-description=A theme with a dark color scheme.
 
-extension-firefox-alpenglow-name=Firefox Alpenglow
+extension-firefox-alpenglow-name=Kogitsune Glow
 extension-firefox-alpenglow-description=Use a colorful appearance for buttons, menus, and windows.
 
-## Theme names shown in the Firefox Themes picker in about:addons and theme add-on card,
+## Theme names shown in the browser Themes picker in about:addons and theme add-on card,
 ## and new default-theme description for the theme add-on card.
 
 extension-default-theme-description2 = A balanced, familiar grey-purple for a classic { -brand-product-name } look.

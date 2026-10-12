@@ -1,0 +1,7 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 236">
+  <rect width="300" height="236" rx="14" fill="#211022" />
+  <image href="kogitsune-mascot.png" width="300" height="300" y="-32" />
+</svg>

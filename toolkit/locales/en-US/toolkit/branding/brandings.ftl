@@ -45,19 +45,14 @@
 # and kept in English.
 -firefox-suggest-brand-name = Firefox Suggest
 
-# ”Home" can be localized, “Firefox” must be treated as a brand
-# and kept in English.
--firefox-home-brand-name = Firefox Home
+# The browser start page uses the Kogitsune product name.
+-firefox-home-brand-name = Kogitsune Home
 
-# View" can be localized, “Firefox” must be treated as a brand
-# and kept in English.
--firefoxview-brand-name = Firefox View
+# The local tab and history view uses the Kogitsune product name.
+-firefoxview-brand-name = Kogitsune View
 
-# Firefox Labs is the name for a page in Settings to allow users to learn about
-# experimental and in-development features, and turn those features on and off.
-# The "Labs" portion can be localized, “Firefox” must be treated as a brand
-# and kept in English.
--firefoxlabs-brand-name = Firefox Labs
+# The experimental features page in Settings uses the Kogitsune product name.
+-firefoxlabs-brand-name = Kogitsune Labs
 
 -smart-window-brand-name =
     { $plural-form ->
