@@ -5,3 +5,10 @@ Mozilla GitHub Enterprise Administrators Team.
 
 See https://mozilla-hub.atlassian.net/l/cp/f5ypVsa7 for contact information, or
 reach out on Matrix: https://chat.mozilla.org/#/room/#github-admin:mozilla.org
+
+The `build-desktop.yml` workflow tries a native Linux, macOS, and Windows
+build on standard GitHub-hosted runners. It builds and packages the browser,
+then keeps each platform artifact for seven days. Standard runners currently
+list 14 GB of storage; Firefox's build guides recommend 30 GB for Linux and
+macOS and 40 GB for Windows. Full builds may fail when a runner runs out of
+space. Use runners with more storage if that happens.

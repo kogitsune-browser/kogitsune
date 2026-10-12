@@ -1,0 +1,98 @@
+name: Build desktop browsers
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build on ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            runner: ubuntu-24.04
+            artifact: linux
+          - name: macOS
+            runner: macos-15-intel
+            artifact: macos
+          - name: Windows
+            runner: windows-2022
+            artifact: windows
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Report available disk space
+        if: runner.os != 'Windows'
+        run: df -h .
+
+      - name: Report available disk space
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Get-Volume -DriveLetter C | Select-Object DriveLetter, SizeRemaining, Size
+
+      - name: Install MozillaBuild
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP "MozillaBuildSetup.exe"
+          Invoke-WebRequest `
+            -Uri "https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-4.2.1.exe" `
+            -OutFile $installer
+          7z x $installer "-oC:\mozilla-build" -y
+          "C:\mozilla-build\bin" >> $env:GITHUB_PATH
+
+      - name: Bootstrap build environment
+        if: runner.os != 'Windows'
+        run: ./mach bootstrap --application-choice=browser --no-interactive
+
+      - name: Bootstrap build environment
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: .\mach.ps1 bootstrap --application-choice=browser --no-interactive
+
+      - name: Build
+        if: runner.os != 'Windows'
+        run: ./mach build
+
+      - name: Build
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: .\mach.ps1 build
+
+      - name: Package
+        if: runner.os != 'Windows'
+        run: ./mach package
+
+      - name: Package
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: .\mach.ps1 package
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kogitsune-${{ matrix.artifact }}-${{ github.sha }}
+          path: obj-*/dist/**
+          if-no-files-found: error
+          retention-days: 7
