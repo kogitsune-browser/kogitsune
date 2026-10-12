@@ -7,6 +7,11 @@
 pref("startup.homepage_override_url", "");
 pref("startup.homepage_welcome_url", "");
 pref("startup.homepage_welcome_url.additional", "");
+pref("browser.newtabpage.activity-stream.showSponsored", false);
+pref("browser.newtabpage.activity-stream.showSponsoredTopSites", false);
+pref("browser.newtabpage.activity-stream.showSponsoredCheckboxes", false);
+pref("browser.urlbar.suggest.quicksuggest.sponsored", false, sticky);
+pref("browser.urlbar.sponsoredTopSites", false);
 pref("app.update.interval", 86400);
 pref("app.update.promptWaitTime", 86400);
 pref(
