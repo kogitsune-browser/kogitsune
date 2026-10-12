@@ -510,6 +510,9 @@ const PanelUI = {
       case "appMenu-history-button":
         this.showSubView("PanelUI-history", target);
         break;
+      case "appMenu-scoped-ca-trust-button":
+        this.showSubView("appMenu-scoped-ca-trust-view", target);
+        break;
       case "appMenu-tab-groups-button":
         this.showSubView("appMenu-tabGroupsListView", target);
         break;

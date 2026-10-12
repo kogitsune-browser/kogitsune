@@ -14,6 +14,12 @@ var gCertDB = Cc["@mozilla.org/security/x509certdb;1"].getService(
  */
 var gCert = window.arguments[0];
 const SCOPED_CA_POLICY_PREF = "security.certificate_scoped_ca.policies";
+const { ScopedCACertFeed } = ChromeUtils.importESModule(
+  "resource://gre/modules/psm/ScopedCACertFeed.sys.mjs"
+);
+let gScopedFeedManaged = false;
+let gStopScopedFeed = false;
+let gCertFingerprint;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -40,6 +46,7 @@ function init() {
   });
 
   let fingerprint = getCertFingerprint();
+  gCertFingerprint = fingerprint;
   let patterns = getScopedCAPolicies()
     .filter(entry => entry.toLowerCase().startsWith(`${fingerprint}=`))
     .map(entry => entry.slice(fingerprint.length + 1));
@@ -47,8 +54,18 @@ function init() {
   let scopedDomains = document.getElementById("scopedDomains");
   scopedTrust.checked = patterns.length > 0;
   scopedDomains.value = patterns.join("\n");
+  gScopedFeedManaged = ScopedCACertFeed.isSubscribed(fingerprint);
+  document.getElementById("scopedFeedStatus").hidden = !gScopedFeedManaged;
+  document.getElementById("scopedFeedStop").hidden = !gScopedFeedManaged;
   updateScopedTrustControls();
   scopedTrust.addEventListener("command", updateScopedTrustControls);
+  document.getElementById("scopedFeedStop").addEventListener("command", () => {
+    gStopScopedFeed = true;
+    gScopedFeedManaged = false;
+    document.getElementById("scopedFeedStatus").hidden = true;
+    document.getElementById("scopedFeedStop").hidden = true;
+    updateScopedTrustControls();
+  });
 }
 
 /**
@@ -80,6 +97,9 @@ function onDialogAccept(event) {
   }
 
   gCertDB.setCertTrust(gCert, Ci.nsIX509Cert.CA_CERT, trustSSL | trustEmail);
+  if (gStopScopedFeed) {
+    ScopedCACertFeed.unsubscribe(gCertFingerprint);
+  }
   saveScopedCAPolicy(domains);
 }
 
@@ -87,11 +107,13 @@ function updateScopedTrustControls() {
   let scopedTrust = document.getElementById("scopedTrust").checked;
   let sslCheckbox = document.getElementById("trustSSL");
   let domainsTextbox = document.getElementById("scopedDomains");
+  let scopedTrustCheckbox = document.getElementById("scopedTrust");
   if (scopedTrust) {
     sslCheckbox.checked = false;
   }
-  sslCheckbox.disabled = scopedTrust;
-  domainsTextbox.disabled = !scopedTrust;
+  scopedTrustCheckbox.disabled = gScopedFeedManaged;
+  sslCheckbox.disabled = scopedTrust || gScopedFeedManaged;
+  domainsTextbox.disabled = !scopedTrust || gScopedFeedManaged;
 }
 
 function getCertFingerprint() {

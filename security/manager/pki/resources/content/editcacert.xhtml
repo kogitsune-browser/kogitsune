@@ -16,6 +16,10 @@
   <dialog id="editCaCert" buttons="accept,cancel">
     <linkset>
       <html:link rel="stylesheet" href="chrome://global/skin/global.css" />
+      <html:link
+        rel="stylesheet"
+        href="chrome://pippki/content/editcacert.css"
+      />
 
       <html:link
         rel="localization"
@@ -46,10 +50,16 @@
         control="scopedDomains"
         data-l10n-id="certmgr-edit-cert-scoped-domains-label"
       />
-      <html:textarea
-        id="scopedDomains"
-        rows="5"
-        style="width: 100%; min-height: 8em; box-sizing: border-box"
+      <html:textarea id="scopedDomains" />
+      <description
+        id="scopedFeedStatus"
+        data-l10n-id="certmgr-edit-cert-scoped-feed-status"
+        hidden="true"
+      />
+      <button
+        id="scopedFeedStop"
+        data-l10n-id="certmgr-edit-cert-scoped-feed-stop"
+        hidden="true"
       />
     </groupbox>
   </dialog>

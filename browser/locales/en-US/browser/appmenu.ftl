@@ -47,6 +47,15 @@ appmenuitem-extensions-and-themes =
     .label = Extensions and Themes
 appmenuitem-extensions =
     .label = Extensions
+appmenuitem-scoped-ca-trust =
+    .label = Domain-scoped CA certificates
+appmenu-scoped-ca-trust-heading = CA trust status
+appmenu-scoped-ca-trust-status = { $certificateCount ->
+    [0] No domain-scoped CAs are active
+    [one] { $certificateCount } domain-scoped CA active for { $domainCount } domain rules
+   *[other] { $certificateCount } domain-scoped CAs active for { $domainCount } domain rules
+}
+appmenu-scoped-ca-manage = Add or manage domain-scoped CAs…
 appmenuitem-print =
   .label = Print…
 appmenuitem-find-in-page =

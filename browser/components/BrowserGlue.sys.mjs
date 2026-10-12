@@ -63,6 +63,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   SearchService: "moz-src:///toolkit/components/search/SearchService.sys.mjs",
   SearchSERPTelemetry:
     "moz-src:///browser/components/search/SearchSERPTelemetry.sys.mjs",
+  ScopedCACertFeed: "resource://gre/modules/psm/ScopedCACertFeed.sys.mjs",
   SessionStartup:
     "moz-src:///browser/components/sessionstore/SessionStartup.sys.mjs",
   SessionWindowUI:
@@ -1009,6 +1010,11 @@ BrowserGlue.prototype = {
           }
         },
         timeout: 3000,
+      },
+
+      {
+        name: "ScopedCACertFeed.startup",
+        task: () => lazy.ScopedCACertFeed.startup(),
       },
 
       // Add breach alerts pref observer reasonably early so the pref flip works

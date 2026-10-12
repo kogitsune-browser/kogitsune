@@ -39,4 +39,17 @@ TEST(ScopedCACertPolicy, InvalidPolicyDoesNotMatch)
   EXPECT_FALSE(policy.MatchesHostname(nsCString("example.com")));
 }
 
+TEST(ScopedCACertPolicy, IranTLDMatchesRootAndSubdomains)
+{
+  ScopedCACertPolicy policy;
+  policy.valid = true;
+  policy.domains.AppendElement(
+      nsCString(R"((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+ir)"));
+
+  EXPECT_TRUE(policy.MatchesHostname(nsCString("example.ir")));
+  EXPECT_TRUE(policy.MatchesHostname(nsCString("shop.example.ir")));
+  EXPECT_FALSE(policy.MatchesHostname(nsCString("example.com")));
+  EXPECT_FALSE(policy.MatchesHostname(nsCString("-bad.ir")));
+}
+
 }  // namespace mozilla::psm

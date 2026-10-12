@@ -13,7 +13,29 @@ document.addEventListener(
       ContainerCreationPanel:
         "chrome://browser/content/usercontext/ContainerCreationPanel.mjs",
       Referrals: "moz-src:///browser/components/referrals/Referrals.sys.mjs",
+      ScopedCACertFeed: "resource://gre/modules/psm/ScopedCACertFeed.sys.mjs",
     });
+
+    document.addEventListener(
+      "ViewShown",
+      event => {
+        if (event.originalTarget?.id !== "appMenu-scoped-ca-trust-view") {
+          return;
+        }
+        lazy.ScopedCACertFeed.getScopedStatus()
+          .then(status => {
+            document.l10n.setAttributes(
+              document.getElementById("appMenu-scoped-ca-trust-status"),
+              "appmenu-scoped-ca-trust-status",
+              status
+            );
+          })
+          .catch(error =>
+            console.error("Could not read scoped CA status", error)
+          );
+      },
+      true
+    );
 
     // <commandset id="mainCommandSet"> defined in browser-sets.inc.xhtml
     document
@@ -281,6 +303,13 @@ document.addEventListener(
             break;
           case "Tools:Addons":
             BrowserAddonUI.openAddonsMgr();
+            break;
+          case "Browser:OpenScopedCAManager":
+            window.openDialog(
+              "chrome://pippki/content/certManager.xhtml",
+              "certmanager",
+              "chrome,centerscreen,resizable,dialog=no"
+            );
             break;
           case "cmd_openUnifiedExtensionsPanel":
             gUnifiedExtensions.openPanel(event);

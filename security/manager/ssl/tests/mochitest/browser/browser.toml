@@ -50,6 +50,8 @@ skip-if = [
 
 ["browser_editCACertTrust.js"]
 
+["browser_scoped_ca_app_menu.js"]
+
 ["browser_exportP12_passwordUI.js"]
 
 ["browser_loadPKCS11Module_ui.js"]
