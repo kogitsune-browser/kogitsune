@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#include <cstring>
+
 #include "AppTrustDomain.h"
 #include "CTKnownLogs.h"
 #include "CTLogVerifier.h"
@@ -18,6 +20,8 @@
 #include "mozilla/Casting.h"
 #include "mozilla/IntegerPrintfMacros.h"
 #include "mozilla/Logging.h"
+#include "mozilla/Preferences.h"
+#include "mozilla/RustRegex.h"
 #include "mozilla/StaticPrefs_security.h"
 #include "mozilla/SyncRunnable.h"
 #include "mozpkix/pkix.h"
@@ -46,6 +50,98 @@ const CertVerifier::Flags CertVerifier::FLAG_MUST_BE_EV = 2;
 const CertVerifier::Flags CertVerifier::FLAG_TLS_IGNORE_STATUS_REQUEST = 4;
 static const unsigned int MIN_RSA_BITS = 2048;
 static const unsigned int MIN_RSA_BITS_WEAK = 1024;
+static constexpr char kScopedCAPolicyPref[] =
+    "security.certificate_scoped_ca.policies";
+
+static int HexValue(char value) {
+  if (value >= '0' && value <= '9') {
+    return value - '0';
+  }
+  if (value >= 'a' && value <= 'f') {
+    return value - 'a' + 10;
+  }
+  if (value >= 'A' && value <= 'F') {
+    return value - 'A' + 10;
+  }
+  return -1;
+}
+
+static bool IsValidScopedPattern(const nsACString& pattern) {
+  if (pattern.IsEmpty() || pattern.Length() > 256) {
+    return false;
+  }
+  mozilla::RustRegexOptions options;
+  options.CaseInsensitive(true);
+  mozilla::RustRegex regex(
+      std::string_view(pattern.BeginReading(), pattern.Length()), options);
+  return regex.IsValid();
+}
+
+static nsTArray<ScopedCACertPolicy> LoadScopedCAPolicies() {
+  nsAutoCString serialized;
+  nsTArray<ScopedCACertPolicy> policies;
+  if (NS_FAILED(Preferences::GetCString(kScopedCAPolicyPref, serialized))) {
+    return policies;
+  }
+
+  for (uint32_t lineStart = 0; lineStart < serialized.Length();) {
+    int32_t lineEnd = serialized.FindChar('\n', lineStart);
+    if (lineEnd < 0) {
+      lineEnd = serialized.Length();
+    }
+    nsDependentCSubstring line(serialized, lineStart, lineEnd - lineStart);
+    lineStart = lineEnd + 1;
+    if (line.IsEmpty()) {
+      continue;
+    }
+
+    int32_t separator = line.FindChar('=');
+    if (separator < 0 || separator != 64) {
+      continue;
+    }
+    ScopedCACertPolicy policy;
+    policy.fingerprint.SetLength(32);
+    bool fingerprintValid = true;
+    for (size_t i = 0; i < policy.fingerprint.Length(); i++) {
+      int high = HexValue(line[2 * i]);
+      int low = HexValue(line[2 * i + 1]);
+      if (high < 0 || low < 0) {
+        fingerprintValid = false;
+        break;
+      }
+      policy.fingerprint[i] = (high << 4) | low;
+    }
+    if (!fingerprintValid) {
+      continue;
+    }
+
+    nsAutoCString pattern(Substring(line, separator + 1));
+    policy.valid = IsValidScopedPattern(pattern);
+    if (policy.valid) {
+      policy.domains.AppendElement(std::move(pattern));
+    }
+    bool duplicate = false;
+    for (auto& existing : policies) {
+      if (existing.fingerprint.Length() == policy.fingerprint.Length() &&
+          std::memcmp(existing.fingerprint.Elements(),
+                      policy.fingerprint.Elements(),
+                      policy.fingerprint.Length()) == 0) {
+        existing.valid = existing.valid && policy.valid;
+        if (existing.valid) {
+          existing.domains.AppendElements(std::move(policy.domains));
+        } else {
+          existing.domains.Clear();
+        }
+        duplicate = true;
+        break;
+      }
+    }
+    if (!duplicate) {
+      policies.AppendElement(std::move(policy));
+    }
+  }
+  return policies;
+}
 
 void CertificateTransparencyInfo::Reset() {
   enabled = false;
@@ -593,6 +689,7 @@ Result CertVerifier::VerifyCert(
     }
 
     case VerifyUsage::TLSServer: {
+      nsTArray<ScopedCACertPolicy> scopedCAPolicies = LoadScopedCAPolicies();
       // TODO: When verifying a certificate in an SSL handshake, we should
       // restrict the acceptable key usage based on the key exchange method
       // chosen by the server.
@@ -614,7 +711,8 @@ Result CertVerifier::VerifyCert(
             mCertShortLifetimeInDays, MIN_RSA_BITS, mCRLiteMode,
             originAttributes, mThirdPartyRootInputs,
             mThirdPartyIntermediateInputs, extraCertificates, sctsFromTLSInput,
-            mCTVerifier, builtChain, pinningTelemetryInfo, hostname);
+            mCTVerifier, builtChain, pinningTelemetryInfo, hostname,
+            &scopedCAPolicies);
         rv = BuildCertChainForOneKeyUsage(
             trustDomain, certDER, time,
             KeyUsage::digitalSignature,  // (EC)DHE
@@ -676,7 +774,8 @@ Result CertVerifier::VerifyCert(
             mCertShortLifetimeInDays, keySizeOptions[i], mCRLiteMode,
             originAttributes, mThirdPartyRootInputs,
             mThirdPartyIntermediateInputs, extraCertificates, sctsFromTLSInput,
-            mCTVerifier, builtChain, pinningTelemetryInfo, hostname);
+            mCTVerifier, builtChain, pinningTelemetryInfo, hostname,
+            &scopedCAPolicies);
         rv = BuildCertChainForOneKeyUsage(
             trustDomain, certDER, time,
             KeyUsage::digitalSignature,  //(EC)DHE

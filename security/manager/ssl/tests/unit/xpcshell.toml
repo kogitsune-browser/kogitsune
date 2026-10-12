@@ -318,6 +318,10 @@ run-sequentially = ["true"] # hardcoded ports
 
 ["test_qwacs.js"]
 
+["test_scoped_ca_trust.js"]
+
+["test_scoped_ca_feed.js"]
+
 ["test_sdr.js"]
 
 ["test_sdr_preexisting.js"]

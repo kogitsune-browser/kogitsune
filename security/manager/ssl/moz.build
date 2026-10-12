@@ -51,6 +51,7 @@ EXTRA_JS_MODULES.psm += [
     "DER.sys.mjs",
     "QWACs.sys.mjs",
     "RemoteSecuritySettings.sys.mjs",
+    "ScopedCACertFeed.sys.mjs",
     "X509.sys.mjs",
 ]
 

@@ -38,6 +38,25 @@ certmgr-edit-cert-trust-ssl =
 certmgr-edit-cert-trust-email =
     .label = This certificate can identify mail users.
 
+certmgr-edit-cert-scoped-trust-title = Website domain restrictions
+certmgr-edit-cert-scoped-trust =
+    .label = Trust this CA only for the listed domains
+certmgr-edit-cert-scoped-domains-description = Enter one regular expression per line. Each expression is matched against the entire hostname, case-insensitively.
+certmgr-edit-cert-scoped-domains-label = Allowed hostname regular expressions:
+certmgr-edit-cert-scoped-domains-invalid = Enter at least one valid regular expression.
+certmgr-edit-cert-scoped-feed-status = This CA’s domain rules are managed by the GitHub sitelist.
+certmgr-edit-cert-scoped-feed-stop = Stop automatic updates
+certmgr-scoped-feed-import = Import CA sitelist from GitHub…
+certmgr-scoped-feed-dialog =
+    .title = Review GitHub CA sitelist
+certmgr-scoped-feed-warning = This installs the listed CA without general website trust. Its allowed hostname rules will be refreshed from the Kogitsune sitelist.
+certmgr-scoped-feed-certificate = Certificate: { $certName }
+certmgr-scoped-feed-fingerprint = SHA-256 fingerprint: { $fingerprint }
+certmgr-scoped-feed-hostnames-label = Allowed hostnames:
+certmgr-scoped-feed-patterns-label = Allowed hostname regular expressions:
+certmgr-scoped-feed-auto-refresh = Refresh the rules automatically each day
+certmgr-scoped-feed-import-error = The GitHub CA sitelist could not be downloaded or installed: { $error }
+
 certmgr-delete-cert2 =
     .title = Delete Certificate
     .style = min-width: 48em; min-height: 24em;

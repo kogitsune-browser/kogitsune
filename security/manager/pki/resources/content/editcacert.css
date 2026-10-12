@@ -1,0 +1,13 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#scopedDomains {
+  box-sizing: border-box;
+  width: 100%;
+  height: 16em;
+  min-height: 12em;
+  resize: both;
+  overflow: auto;
+  font-family: monospace;
+}

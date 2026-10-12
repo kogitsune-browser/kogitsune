@@ -16,6 +16,10 @@
   <dialog id="editCaCert" buttons="accept,cancel">
     <linkset>
       <html:link rel="stylesheet" href="chrome://global/skin/global.css" />
+      <html:link
+        rel="stylesheet"
+        href="chrome://pippki/content/editcacert.css"
+      />
 
       <html:link
         rel="localization"
@@ -32,5 +36,31 @@
       <checkbox data-l10n-id="certmgr-edit-cert-trust-ssl" id="trustSSL" />
       <checkbox data-l10n-id="certmgr-edit-cert-trust-email" id="trustEmail" />
     </vbox>
+    <separator />
+    <groupbox>
+      <caption data-l10n-id="certmgr-edit-cert-scoped-trust-title" />
+      <checkbox
+        id="scopedTrust"
+        data-l10n-id="certmgr-edit-cert-scoped-trust"
+      />
+      <description
+        data-l10n-id="certmgr-edit-cert-scoped-domains-description"
+      />
+      <label
+        control="scopedDomains"
+        data-l10n-id="certmgr-edit-cert-scoped-domains-label"
+      />
+      <html:textarea id="scopedDomains" />
+      <description
+        id="scopedFeedStatus"
+        data-l10n-id="certmgr-edit-cert-scoped-feed-status"
+        hidden="true"
+      />
+      <button
+        id="scopedFeedStop"
+        data-l10n-id="certmgr-edit-cert-scoped-feed-stop"
+        hidden="true"
+      />
+    </groupbox>
   </dialog>
 </window>

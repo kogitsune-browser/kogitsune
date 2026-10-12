@@ -156,6 +156,10 @@
                      command="cmd_openUnifiedExtensionsPanel"
                      hidden="true"
                      />
+      <toolbarbutton id="appMenu-scoped-ca-trust-button"
+                     class="subviewbutton subviewbutton-nav"
+                     data-l10n-id="appmenuitem-scoped-ca-trust"
+                     closemenu="none"/>
       <toolbarseparator/>
       <toolbarbutton id="appMenu-print-button2"
                      class="subviewbutton"
@@ -234,6 +238,20 @@
                      key="key_quitApplication"
                      command="cmd_quitApplication"/>
 #endif
+    </vbox>
+  </panelview>
+
+  <panelview id="appMenu-scoped-ca-trust-view" class="PanelUI-subView">
+    <vbox class="panel-subview-body">
+      <html:h2 id="appMenu-scoped-ca-trust-heading"
+               class="subview-subheader"
+               data-l10n-id="appmenu-scoped-ca-trust-heading"/>
+      <html:p id="appMenu-scoped-ca-trust-status"
+              aria-live="polite"/>
+      <toolbarbutton id="appMenu-scoped-ca-manage-button"
+                     class="subviewbutton"
+                     data-l10n-id="appmenu-scoped-ca-manage"
+                     command="Browser:OpenScopedCAManager"/>
     </vbox>
   </panelview>
 

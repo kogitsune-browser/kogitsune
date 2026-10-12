@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<?csp default-src chrome:; style-src chrome: 'unsafe-inline' ?>
+
+<!DOCTYPE window>
+
+<window
+  data-l10n-id="certmgr-scoped-feed-dialog"
+  data-l10n-attrs="title"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+>
+  <dialog id="scopedFeedDialog" buttons="accept,cancel">
+    <linkset>
+      <html:link rel="stylesheet" href="chrome://global/skin/global.css" />
+      <html:link
+        rel="localization"
+        href="security/certificates/certManager.ftl"
+      />
+    </linkset>
+
+    <script src="chrome://pippki/content/importscopedcafeed.js" />
+
+    <description data-l10n-id="certmgr-scoped-feed-warning" />
+    <description id="scopedFeedCertificate" />
+    <description id="scopedFeedFingerprint" />
+    <label data-l10n-id="certmgr-scoped-feed-hostnames-label" />
+    <html:textarea
+      id="scopedFeedHostnames"
+      rows="5"
+      readonly="readonly"
+      style="width: 100%; min-height: 7em; box-sizing: border-box"
+    />
+    <label data-l10n-id="certmgr-scoped-feed-patterns-label" />
+    <html:textarea
+      id="scopedFeedPatterns"
+      rows="8"
+      readonly="readonly"
+      style="width: 100%; min-height: 12em; box-sizing: border-box"
+    />
+    <checkbox
+      id="scopedFeedAutomaticRefresh"
+      data-l10n-id="certmgr-scoped-feed-auto-refresh"
+      checked="true"
+    />
+  </dialog>
+</window>

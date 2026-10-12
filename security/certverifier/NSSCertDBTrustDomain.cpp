@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 
+#include <cstring>
 #include <utility>
 
 #include "CRLiteTimestamp.h"
@@ -21,6 +22,7 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/ClearOnShutdown.h"
 #include "mozilla/Logging.h"
+#include "mozilla/RustRegex.h"
 #include "mozilla/Services.h"
 #include "mozilla/StaticPrefs_security.h"
 #include "mozilla/SyncRunnable.h"
@@ -73,7 +75,8 @@ NSSCertDBTrustDomain::NSSCertDBTrustDomain(
     const UniquePtr<mozilla::ct::MultiLogCTVerifier>& ctVerifier,
     /*out*/ nsTArray<nsTArray<uint8_t>>& builtChain,
     /*optional*/ PinningTelemetryInfo* pinningTelemetryInfo,
-    /*optional*/ const char* hostname)
+    /*optional*/ const char* hostname,
+    /*optional*/ const nsTArray<ScopedCACertPolicy>* scopedCAPolicies)
     : mCertDBTrustType(certDBTrustType),
       mOCSPFetching(ocspFetching),
       mOCSPCache(ocspCache),
@@ -95,6 +98,7 @@ NSSCertDBTrustDomain::NSSCertDBTrustDomain(
       mIsBuiltChainRootBuiltInRoot(false),
       mPinningTelemetryInfo(pinningTelemetryInfo),
       mHostname(hostname),
+      mScopedCAPolicies(scopedCAPolicies),
       mCertStorage(do_GetService(NS_CERT_STORAGE_CID)),
       mOCSPStaplingStatus(CertVerifier::OCSP_STAPLING_NEVER_CHECKED),
       mBuiltInRootsModule(SECMOD_FindModule(kRootModuleName.get())),
@@ -470,6 +474,37 @@ Result NSSCertDBTrustDomain::GetCertTrust(EndEntityOrCA endEntityOrCA,
     }
   }
 
+  if (mCertDBTrustType == trustSSL &&
+      endEntityOrCA == EndEntityOrCA::MustBeCA && mHostname &&
+      mScopedCAPolicies && !mScopedCAPolicies->IsEmpty()) {
+    uint8_t fingerprint[32];
+    Result result = DigestBuf(candidateCertDER, DigestAlgorithm::sha256,
+                              fingerprint, sizeof(fingerprint));
+    if (result != Success) {
+      return result;
+    }
+    for (const auto& scopedCAPolicy : *mScopedCAPolicies) {
+      if (scopedCAPolicy.fingerprint.Length() != sizeof(fingerprint) ||
+          std::memcmp(scopedCAPolicy.fingerprint.Elements(), fingerprint,
+                      sizeof(fingerprint)) != 0) {
+        continue;
+      }
+
+      if (!scopedCAPolicy.MatchesHostname(nsCString(mHostname))) {
+        trustLevel = TrustLevel::ActivelyDistrusted;
+      } else if (policy.IsAnyPolicy()) {
+        trustLevel = TrustLevel::TrustAnchor;
+      } else {
+        nsTArray<uint8_t> certBytes(candidateCertDER.UnsafeGetData(),
+                                    candidateCertDER.GetLength());
+        trustLevel = CertIsAuthoritativeForEVPolicy(certBytes, policy)
+                         ? TrustLevel::TrustAnchor
+                         : TrustLevel::InheritsTrust;
+      }
+      return Success;
+    }
+  }
+
   // This may be a third-party root.
   for (const auto& thirdPartyRootInput : mThirdPartyRootInputs) {
     if (InputsAreEqual(candidateCertDER, thirdPartyRootInput)) {
@@ -594,6 +629,34 @@ Result NSSCertDBTrustDomain::DigestBuf(Input item, DigestAlgorithm digestAlg,
                                        /*out*/ uint8_t* digestBuf,
                                        size_t digestBufLen) {
   return DigestBufNSS(item, digestAlg, digestBuf, digestBufLen);
+}
+
+bool ScopedCACertPolicy::MatchesHostname(const nsACString& hostname) const {
+  if (!valid) {
+    return false;
+  }
+
+  nsAutoCString normalizedHostname(hostname);
+  if (StringEndsWith(normalizedHostname, nsLiteralCString("."))) {
+    normalizedHostname.Truncate(normalizedHostname.Length() - 1);
+  }
+
+  for (const auto& pattern : domains) {
+    nsAutoCString anchoredPattern("\\A(?:");
+    anchoredPattern.Append(pattern);
+    anchoredPattern.Append(")\\z");
+    mozilla::RustRegexOptions options;
+    options.CaseInsensitive(true);
+    mozilla::RustRegex regex(std::string_view(anchoredPattern.BeginReading(),
+                                              anchoredPattern.Length()),
+                             options);
+    if (regex.IsValid() &&
+        regex.IsMatch(std::string_view(normalizedHostname.BeginReading(),
+                                       normalizedHostname.Length()))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 TimeDuration NSSCertDBTrustDomain::GetOCSPTimeout() const {

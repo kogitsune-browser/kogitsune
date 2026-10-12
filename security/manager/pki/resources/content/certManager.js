@@ -12,6 +12,9 @@ var { NetUtil } = ChromeUtils.importESModule(
 const { exportToFile, viewCertHelper } = ChromeUtils.importESModule(
   "resource://gre/modules/psm/pippki.sys.mjs"
 );
+const { ScopedCACertFeed } = ChromeUtils.importESModule(
+  "resource://gre/modules/psm/ScopedCACertFeed.sys.mjs"
+);
 
 var key;
 
@@ -409,6 +412,9 @@ async function LoadCerts() {
           break;
         case "ca_addButton":
           addCACerts();
+          break;
+        case "ca_addFeedButton":
+          addScopedCAFeed();
           break;
         case "ca_exportButton":
           exportCerts();
@@ -858,6 +864,34 @@ async function addCACerts() {
       caTreeView.selection.clearSelection();
     }
   });
+}
+
+async function addScopedCAFeed() {
+  try {
+    let feed = await ScopedCACertFeed.preview();
+    let args = { feed, accepted: false, automaticRefresh: true };
+    window.openDialog(
+      "chrome://pippki/content/importscopedcafeed.xhtml",
+      "",
+      "chrome,centerscreen,modal,resizable",
+      args
+    );
+    if (!args.accepted) {
+      return;
+    }
+
+    await ScopedCACertFeed.install(feed, args.automaticRefresh);
+    let certcache = await certdb.getCerts();
+    caTreeView.loadCertsFromCache(certcache, Ci.nsIX509Cert.CA_CERT);
+    caTreeView.selection.clearSelection();
+  } catch (error) {
+    console.error("Could not install the Kogitsune CA sitelist", error);
+    let message = await document.l10n.formatValue(
+      "certmgr-scoped-feed-import-error",
+      { error: error.message }
+    );
+    Services.prompt.alert(window, "", message);
+  }
 }
 
 async function addEmailCert() {

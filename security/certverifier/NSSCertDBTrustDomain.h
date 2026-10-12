@@ -117,6 +117,14 @@ pkix::Result BuildRevocationCheckArrays(pkix::Input certDER,
                                         /*out*/ nsTArray<uint8_t>& subjectBytes,
                                         /*out*/ nsTArray<uint8_t>& pubKeyBytes);
 
+struct ScopedCACertPolicy {
+  nsTArray<uint8_t> fingerprint;
+  nsTArray<nsCString> domains;
+  bool valid = false;
+
+  bool MatchesHostname(const nsACString& hostname) const;
+};
+
 class NSSCertDBTrustDomain : public mozilla::pkix::TrustDomain {
  public:
   typedef mozilla::pkix::Result Result;
@@ -142,7 +150,9 @@ class NSSCertDBTrustDomain : public mozilla::pkix::TrustDomain {
       const UniquePtr<mozilla::ct::MultiLogCTVerifier>& ctVerifier,
       /*out*/ nsTArray<nsTArray<uint8_t>>& builtChain,
       /*optional*/ PinningTelemetryInfo* pinningTelemetryInfo = nullptr,
-      /*optional*/ const char* hostname = nullptr);
+      /*optional*/ const char* hostname = nullptr,
+      /*optional*/ const nsTArray<ScopedCACertPolicy>* scopedCAPolicies =
+          nullptr);
 
   virtual Result FindIssuer(mozilla::pkix::Input encodedIssuerName,
                             IssuerChecker& checker,
@@ -298,7 +308,8 @@ class NSSCertDBTrustDomain : public mozilla::pkix::TrustDomain {
   nsTArray<nsTArray<uint8_t>>& mBuiltChain;                       // non-owning
   bool mIsBuiltChainRootBuiltInRoot;
   PinningTelemetryInfo* mPinningTelemetryInfo;
-  const char* mHostname;  // non-owning - only used for pinning checks
+  const char* mHostname;  // non-owning - used for pinning and scoped trust
+  const nsTArray<ScopedCACertPolicy>* mScopedCAPolicies;
   nsCOMPtr<nsICertStorage> mCertStorage;
   CertVerifier::OCSPStaplingStatus mOCSPStaplingStatus;
   // Certificate Transparency data extracted during certificate verification
