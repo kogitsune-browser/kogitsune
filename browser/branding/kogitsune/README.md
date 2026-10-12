@@ -27,3 +27,6 @@ requests are disabled, and manual update and release-note links point to the
 project’s GitHub releases. Windows stub installers are not enabled for the
 Kogitsune channel until a direct full-installer download and code-signing
 identity are available.
+
+Sponsored Pocket stories, sponsored New Tab shortcuts, and sponsored URL-bar
+suggestions are disabled by default in Kogitsune builds.
